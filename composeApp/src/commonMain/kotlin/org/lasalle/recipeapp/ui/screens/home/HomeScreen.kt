@@ -53,10 +53,14 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import coil3.compose.AsyncImage
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.lasalle.recipeapp.models.RecipePreview
+import org.lasalle.recipeapp.ui.HomeScreenRoute
+import org.lasalle.recipeapp.ui.LoginScreenRoute
 import org.lasalle.recipeapp.ui.RecipeTheme
 import org.lasalle.recipeapp.ui.screens.home.components.LoadingOverlay
 import org.lasalle.recipeapp.ui.screens.home.components.RecipeCard
@@ -67,7 +71,7 @@ import kotlin.text.category
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(){
+fun HomeScreen(navController: NavController){
     val colors = MaterialTheme.colorScheme
     val container = if (isSystemInDarkTheme()) colors.surface else Color.White
     val vm : HomeViewModel = viewModel()
@@ -122,7 +126,14 @@ fun HomeScreen(){
                     )
                 }
                 IconButton(
-                    onClick = {}
+                    onClick = {
+                        vm.logOut()
+                        navController.navigate(LoginScreenRoute){
+                            popUpTo(HomeScreenRoute) {
+                                inclusive = true
+                            }
+                        }
+                    }
                 ){
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.Logout,
@@ -473,6 +484,9 @@ fun HomeScreen(){
                 Button(
                     onClick = {
                         scope.launch {
+                            if (vm.isNewGenerated){
+                                vm.saveRecipeInDb()
+                            }
                             vm.hideModal()
                         }
                     },
@@ -483,7 +497,7 @@ fun HomeScreen(){
                         .align(Alignment.End),
                 ){
                     Text(
-                        text = "Cerrar",
+                        text = if (vm.isNewGenerated) "Guardar" else "Cerrar",
                         color = colors.onPrimary,
                         fontWeight = FontWeight.Bold
                     )
@@ -497,6 +511,8 @@ fun HomeScreen(){
 @Composable
 fun HomeScreenPreview(){
     RecipeTheme {
-        HomeScreen()
+        HomeScreen(
+            navController = rememberNavController()
+        )
     }
 }

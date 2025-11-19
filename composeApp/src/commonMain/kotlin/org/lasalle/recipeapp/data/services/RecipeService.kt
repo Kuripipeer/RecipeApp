@@ -15,4 +15,7 @@ interface RecipeService {
 
     @POST("recipes/ai-generate")
     suspend fun generateRecipe(@Body request: Prompt) : RecipePreview
+
+    @POST("recipes")
+    suspend fun saveRecipeInDb(@Body request : Recipe) : Recipe
 }

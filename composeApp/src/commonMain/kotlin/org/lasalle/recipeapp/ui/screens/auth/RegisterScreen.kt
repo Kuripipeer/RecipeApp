@@ -28,12 +28,14 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.lasalle.recipeapp.ui.RecipeTheme
 import org.lasalle.recipeapp.ui.viewmodels.AuthViewModel
 
 @Composable
-fun RegisterScreen() {
+fun RegisterScreen(navController: NavController) {
     val colors = MaterialTheme.colorScheme
     val authViewModel : AuthViewModel = viewModel()
     var name by remember {
@@ -198,6 +200,8 @@ fun RegisterScreen() {
 @Composable
 fun RegisterScreenPreview() {
     RecipeTheme {
-        RegisterScreen()
+        RegisterScreen(
+            navController = rememberNavController()
+        )
     }
 }

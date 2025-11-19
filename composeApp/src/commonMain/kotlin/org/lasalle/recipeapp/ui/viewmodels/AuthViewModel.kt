@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import org.lasalle.recipeapp.data.services.KtorfitFactory
+import org.lasalle.recipeapp.data.services.Preferences
 import org.lasalle.recipeapp.models.LoginBody
 import org.lasalle.recipeapp.models.RegisterBody
 
@@ -15,8 +16,10 @@ class AuthViewModel() : ViewModel(){
     // CREAR EL SERVICIO DE AUTENTICACION
     // MANDAR A LLAMAR A LA API CON LOS DATOS QUE ME PIDEN
     // TODO: UTILIZAR ESTE MENSAJE PARA UN SNACKBAR
+    val preferences = Preferences
     var message by mutableStateOf("")
     val authService = KtorfitFactory.getAuthService()
+    var isLogged by mutableStateOf(preferences.getIsLogged())
 
     fun register(name: String, email: String, password : String){
         viewModelScope.launch {
@@ -28,7 +31,9 @@ class AuthViewModel() : ViewModel(){
                 )
                 val result = authService.register(register)
                 if (result.isLogged){
-                    // TODO: CREAR NAVEGACIÓN A HOME SCREEN
+                    isLogged = true
+                    preferences.saveIsLogged(true)
+                    preferences.saveUserId(result.userId)
                 } else{
                     message = result.message
                 }
@@ -49,7 +54,9 @@ class AuthViewModel() : ViewModel(){
                 )
                 val response = authService.login(request)
                 if (response.isLogged){
-                    // TODO: NAVEGAR A HOME SCREEN Y GUARDAR EL USER ID EN MEMORIA
+                    isLogged = true
+                    preferences.saveIsLogged(true)
+                    preferences.saveUserId(response.userId)
                 } else{
                     message = response.message
                 }

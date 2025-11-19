@@ -15,6 +15,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -25,12 +26,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.lasalle.recipeapp.ui.HomeScreenRoute
+import org.lasalle.recipeapp.ui.LoginScreenRoute
 import org.lasalle.recipeapp.ui.RecipeTheme
+import org.lasalle.recipeapp.ui.screens.home.HomeScreenPreview
 import org.lasalle.recipeapp.ui.viewmodels.AuthViewModel
 
 @Composable
-fun LoginScreen(){
+fun LoginScreen(navController: NavController){
     val colors = MaterialTheme.colorScheme
     val authViewModel : AuthViewModel = viewModel()
     var email by remember {
@@ -38,6 +44,16 @@ fun LoginScreen(){
     }
     var password by remember {
         mutableStateOf("")
+    }
+
+    LaunchedEffect(authViewModel.isLogged){
+        if (authViewModel.isLogged){
+            navController.navigate(HomeScreenRoute){
+                popUpTo(LoginScreenRoute){
+                    inclusive = true
+                }
+            }
+        }
     }
 
     Box(
@@ -118,6 +134,8 @@ fun LoginScreen(){
 @Composable
 fun LoginScreenPreview(){
     RecipeTheme {
-        LoginScreen()
+        LoginScreen(
+            navController = rememberNavController()
+        )
     }
 }
