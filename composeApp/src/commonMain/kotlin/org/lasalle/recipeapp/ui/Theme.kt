@@ -11,6 +11,7 @@ fun RecipeTheme(
 ){
     MaterialTheme(
         colorScheme = if (useDarkTheme) DarkColors else LightColors,
-        content = content
+        content = content,
+        typography = PoppinsTypo()
     )
 }
